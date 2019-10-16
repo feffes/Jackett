@@ -198,14 +198,14 @@ namespace Jackett.Common.Indexers
                     {
                         var synonyms = new List<string>();
                         var groupID = (long)group["ID"];
-                        var Image = (string)group["Image"];
+                        var Image = group["Image"].ToString();
                         var ImageUrl = (string.IsNullOrWhiteSpace(Image) ? null : new Uri(Image));
                         var Year = (int)group["Year"];
-                        var GroupName = (string)group["GroupName"];
-                        var SeriesName = (string)group["SeriesName"];
-                        var Artists = (string)group["Artists"];
+                        var GroupName = group["GroupName"].ToString();
+                        var SeriesName = group["SeriesName"].ToString();
+                        var Artists = group["Artists"].ToString();
 
-                        var mainTitle = WebUtility.HtmlDecode((string)group["FullName"]);
+                        var mainTitle = WebUtility.HtmlDecode(group["FullName"].ToString());
                         if (SeriesName != null)
                             mainTitle = SeriesName;
 
@@ -214,7 +214,7 @@ namespace Jackett.Common.Indexers
                         // If the title contains a comma then we can't use the synonyms as they are comma seperated
                         if (!mainTitle.Contains(",") && AddSynonyms)
                         {
-                            var symnomnNames = WebUtility.HtmlDecode((string)group["Synonymns"]);
+                            var symnomnNames = WebUtility.HtmlDecode(group["Synonymns"].ToString());
 
                             if (!string.IsNullOrWhiteSpace(symnomnNames))
                             {
@@ -230,16 +230,16 @@ namespace Jackett.Common.Indexers
                         }
 
                         List<int> Category = null;
-                        var category = (string)group["CategoryName"];
+                        var category = group["CategoryName"].ToString();
 
-                        var Description = (string)group["Description"];
+                        var Description = group["Description"].ToString();
 
                         foreach (JObject torrent in group["Torrents"])
                         {
                             var releaseInfo = "S01";
                             string episode = null;
                             int? season = null;
-                            var EditionTitle = (string)torrent["EditionData"]["EditionTitle"];
+                            var EditionTitle = torrent["EditionData"]["EditionTitle"].ToString();
                             if (!string.IsNullOrWhiteSpace(EditionTitle))
                                 releaseInfo = WebUtility.HtmlDecode(EditionTitle);
 
@@ -270,11 +270,11 @@ namespace Jackett.Common.Indexers
                                     continue;
                             }
                             var torrentID = (long)torrent["ID"];
-                            var Property = (string)torrent["Property"];
+                            var Property = torrent["Property"].ToString();
                             Property = Property.Replace(" | Freeleech", "");
-                            var Link = (string)torrent["Link"];
+                            var Link = torrent["Link"].ToString();
                             var LinkUri = new Uri(Link);
-                            var UploadTimeString = (string)torrent["UploadTime"];
+                            var UploadTimeString = torrent["UploadTime"].ToString();
                             var UploadTime = DateTime.ParseExact(UploadTimeString, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                             var PublushDate = DateTime.SpecifyKind(UploadTime, DateTimeKind.Utc).ToLocalTime();
                             var CommentsLink = TorrentsUrl + "?id=" + groupID.ToString() + "&torrentid=" + torrentID.ToString();
