@@ -318,7 +318,6 @@ namespace Jackett.Common.Indexers
                                         Category = new List<int> { TorznabCatType.AudioOther.ID };
                                 }
                             }
-
                             // We dont actually have a release name >.> so try to create one
                             var releaseTags = Property.Split("|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
                             for (int i = releaseTags.Count - 1; i >= 0; i--)
@@ -347,11 +346,11 @@ namespace Jackett.Common.Indexers
 
                             var infoString = "";
 
-                            for (int i = 0; i + 1 < releaseTags.Count(); i++)
+                            foreach (var tag in releaseTags)
                             {
-                                if (releaseTags[i] == "Raw" && !AllowRaws)
-                                    continue;
-                                infoString += "[" + releaseTags[i] + "]";
+                                if (tag.ToLowerInvariant() == "raw" && !AllowRaws)
+                                    goto RAWCONT;
+                                infoString += "[" + tag + "]";
                             }
 
                             var MinimumSeedTime = 259200;
@@ -391,6 +390,7 @@ namespace Jackett.Common.Indexers
 
                                 releases.Add(release);
                             }
+                        RAWCONT: continue;
                         }
                     }
                 }
@@ -410,3 +410,7 @@ namespace Jackett.Common.Indexers
         }
     }
 }
+
+
+
+
